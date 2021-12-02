@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from typing import Tuple, List
 import functools
+import itertools
+import operator
 
 def command_to_tuple(s: str) -> Tuple[str, int]:
     splits = s.split(" ")
@@ -11,29 +13,15 @@ input_p = Path(os.getcwd()) / 'input'
 text = input_p.read_text()
 commands: List[Tuple[str, int]] = [command_to_tuple(l) for l in text.splitlines()]
 
-forward_commands = [c[1] for c in commands if c[0] == "forward"]
-up_commands = [c[1] for c in commands if c[0] == "up"]
-down_commands = [c[1] for c in commands if c[0] == "down"]
+forward_commands = [c[1] if c[0] == "forward" else 0 for c in commands]
+up_commands = [c[1] if c[0] == "up" else 0 for c in commands]
+down_commands = [c[1] if c[0] == "down" else 0 for c in commands]
 
-#first part
-add = lambda a,b: a + b
-horizontal = functools.reduce(add, forward_commands, 0)
-depth = functools.reduce(add, down_commands, 0)
-depth -= functools.reduce(add, up_commands, 0)
+print(sum(forward_commands) * (sum(down_commands) - sum(up_commands)))
+aim_increments = [down - up for (down,up) in zip(down_commands, up_commands)]
+aims = itertools.accumulate(aim_increments, operator.add)
 
-print(horizontal * depth)
+collect = lambda a,b: a + (b[0] * b[1])
+depth = functools.reduce(collect, zip(aims, forward_commands), 0)
 
-#second part
-aim = 0
-horizontal = 0
-depth = 0
-for command in commands:
-    if command[0] == "down":
-        aim += command[1]
-    elif command[0] == "up":
-        aim -= command[1]
-    else:
-        horizontal += command[1]
-        depth += aim * command[1]
-
-print(horizontal * depth)
+print(sum(forward_commands) * depth)
