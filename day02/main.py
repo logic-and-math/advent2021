@@ -18,6 +18,8 @@ up_commands = [c[1] if c[0] == "up" else 0 for c in commands]
 down_commands = [c[1] if c[0] == "down" else 0 for c in commands]
 
 print(sum(forward_commands) * (sum(down_commands) - sum(up_commands)))
+
+#part 2
 aim_increments = [down - up for (down,up) in zip(down_commands, up_commands)]
 aims = itertools.accumulate(aim_increments, operator.add)
 
