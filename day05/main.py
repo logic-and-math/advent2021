@@ -44,6 +44,7 @@ def get_points_diagonal(v: Vent) -> List[Tuple[int, int]]:
 
     return [(x, y(x)) for x in range(start_point[0], end_point[0] + 1)]
 
+
 input_p = Path(os.getcwd()) / 'input'
 text = input_p.read_text()
 vents = [line_to_vent(l) for l in text.splitlines()]
@@ -56,8 +57,14 @@ horizontal_points = [get_points_horizontal(v) for v in horizontal]
 vertical_points = [get_points_vertical(v) for v in vertical]
 diagonal_points = [get_points_diagonal(v) for v in diagonal]
 
-all_points = itertools.chain(*horizontal_points, *vertical_points, *diagonal_points)
+# first part
+all_points = itertools.chain(*horizontal_points, *vertical_points)
+counter = Counter(all_points)
+more_than_2 = [k for k in counter.keys() if counter[k] >= 2]
+print(len(more_than_2))
 
+# second part
+all_points = itertools.chain(*horizontal_points, *vertical_points, *diagonal_points)
 counter = Counter(all_points)
 more_than_2 = [k for k in counter.keys() if counter[k] >= 2]
 print(len(more_than_2))
