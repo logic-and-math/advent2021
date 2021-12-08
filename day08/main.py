@@ -9,6 +9,8 @@ class Entry:
     signals: List[str]
     outputs: List[str]
 
+sort_string = lambda s: "".join(sorted(s))
+
 def line_to_entry(l) -> Entry:
     signals_s, outputs_s = l.split(" | ")
     return Entry(signals_s.split(" "), outputs_s.split(" "))
@@ -36,8 +38,8 @@ def conf_from_mappings(mappings):
 
 def check_solution(signals, mappings):
     new_configuration = conf_from_mappings(mappings)
-    sorted_signals = set(["".join(sorted(s)) for s in signals])
-    sorted_conf = set(["".join(sorted(s)) for s in new_configuration])
+    sorted_signals = set([sort_string(s) for s in signals])
+    sorted_conf = set([sort_string(s) for s in new_configuration])
 
     return sorted_signals == sorted_conf
 
@@ -61,8 +63,8 @@ def find_solution(signals, mappings, marked, pos):
 
 def calculate_value(outputs, solution):
     conf = conf_from_mappings(solution)
-    conf_sorted_to_value = {"".join(sorted(s)): i for (i,s) in enumerate(conf)}
-    outputs_sorted = ["".join(sorted(s)) for s in outputs]
+    conf_sorted_to_value = {sort_string(s): i for (i,s) in enumerate(conf)}
+    outputs_sorted = [sort_string(s) for s in outputs]
 
     output_value = [str(conf_sorted_to_value[s]) for s in outputs_sorted]
     return output_value
