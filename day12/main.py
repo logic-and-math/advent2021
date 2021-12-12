@@ -7,7 +7,7 @@ from typing import List
 input_p = Path(os.getcwd()) / 'input'
 text = input_p.read_text()
 
-connections = []#[('start', 'A'), ('start', 'b'), ('A', 'c'), ('A', 'b'), ('b', 'd'), ('A', 'end'), ('b', 'end')]
+connections = []
 
 for l in text.splitlines():
     c1, c2 = l.split("-")
@@ -52,11 +52,12 @@ def solve(cave, solution, allow_twice):
         solution.pop()
         return
     
-    small_cave_counts = get_cave_counts([c for c in solution if c[0].islower()])
-    any_cave_appears_twice = any([v >= 2 for v in small_cave_counts.values()])
-
     large_filter = lambda c: c[0].isupper()
     small_filter = lambda c: c[0].islower()
+
+    small_cave_counts = get_cave_counts([c for c in solution if small_filter(c)])
+    any_cave_appears_twice = any([v >= 2 for v in small_cave_counts.values()])
+
     if allow_twice and not any_cave_appears_twice:
         count_filter = lambda c: small_cave_counts.get(c, 0) <= 1
     else:
