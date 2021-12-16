@@ -41,16 +41,17 @@ def djikstra(my_matrix, n_rows, n_cols):
     prior_queue = PriorityQueue()
     for (i,j) in all_indexes[1:]:
         prior_queue.put_nowait(((i,j), large_number))
-    prior_queue.put_nowait(( (0,0), 0))
+    prior_queue.put_nowait(( start, 0))
 
     while len(vertices) > 0:
-        curr_v = prior_queue.get_nowait()[0]
+        curr_v, factor = prior_queue.get_nowait()
         if curr_v not in vertices:
             continue
         
         vertices.remove(curr_v)
 
         if curr_v == target:
+            print(factor)
             break
 
         for n in get_neighbors(curr_v[0], curr_v[1], n_rows, n_cols):
@@ -111,7 +112,7 @@ for i in range(4): # then create all rows
 for row in full_matrix:
     for i in range(4):
         row.extend(increment_row(row[-n_cols:]))
-    print(row)
+
 dist, prev = djikstra(full_matrix, n_rows * 5, n_cols * 5)
 target = (n_rows * 5 - 1, n_cols * 5 - 1)
 path = [target]
