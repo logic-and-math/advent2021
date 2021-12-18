@@ -126,6 +126,19 @@ def full_addition(root1, root2):
             break
     return root
 
+def copy_tree(root):
+    nodes = []
+    get_nodes(root, nodes)
+    node_to_new_node = {n: Node() for n in nodes}
+    for (old, new) in node_to_new_node.items():
+        new: Node
+        new.left = node_to_new_node[old.left] if old.left is not None else None
+        new.right = node_to_new_node[old.right] if old.right is not None else None
+        new.parent = node_to_new_node[old.parent] if old.parent is not None else None
+        new.value = old.value
+    
+    return node_to_new_node[root]
+
 def print_tree(root):
     nodes = []
     get_nodes(root, nodes)
@@ -145,15 +158,19 @@ def part_1(lines):
     print(magnitude(root))
 
 def part_2(lines):
+    og_numbers = [read_number(line) for line in lines]
+    numbers = [copy_tree(r) for r in og_numbers]
+
     import itertools
     combinations = itertools.permutations(range(len(lines)), 2)
 
     results = []
     for (i,j) in combinations:
-        #TODO: fix so you dont have to refresh every time
-        numbers = [read_number(line) for line in lines]
         results.append(full_addition(numbers[i], numbers[j]))
-    
+        #replace the two trees on which i worked
+        numbers[i] = copy_tree(og_numbers[i])
+        numbers[j] = copy_tree(og_numbers[j])
+
     magnitudes = [magnitude(r) for r in results]
     print(max(magnitudes))
 
